@@ -28,7 +28,6 @@ public class ClienteService {
         if (cliente == null) {
             throw new RegraDeNegocioException("Nenhum cadastro encontrado para o CPF informado: " + cpf);
         }
-
         return cliente;
     }
 
@@ -36,13 +35,11 @@ public class ClienteService {
         if (nome == null) {
             throw new ValidacaoException("Informe um nome");
         }
-
         List<Cliente> clientes = clienteRepository.findByNome(nome);
 
         if (clientes.isEmpty()) {
             throw new RegraDeNegocioException("Cliente não encontrado" + nome);
         }
-
         return clientes;
     }
 
@@ -50,7 +47,6 @@ public class ClienteService {
         if (clienteDTO.getNome() == null || clienteDTO.getCpf() == null || clienteDTO.getEmail() == null) {
             throw new ValidacaoException("Verifique as informações e tente novamente");
         }
-
         Cliente cliente = new Cliente();
         BeanUtils.copyProperties(cliente, clienteDTO);
         clienteRepository.save(cliente);

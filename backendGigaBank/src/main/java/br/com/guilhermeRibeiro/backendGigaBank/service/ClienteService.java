@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClienteService {
@@ -52,6 +53,28 @@ public class ClienteService {
         clienteRepository.save(cliente);
 
         return cliente;
+    }
+
+    public Cliente atualizarCadastroCliente(String cpf, ClienteDTO clienteDTO) {
+        Cliente clienteAtualizado = clienteRepository.findByCpf(cpf);
+        if (clienteAtualizado == null) {
+            throw new RegraDeNegocioException("Cliente não encontrado na base da dados");
+        } else {
+            BeanUtils.copyProperties(clienteAtualizado, clienteDTO);
+            clienteRepository.save(clienteAtualizado);
+
+            return clienteAtualizado;
+        }
+    }
+
+    public String deletarCadastroCliente(String cpf) {
+        Cliente cliente = clienteRepository.findByCpf(cpf);
+        if (cliente == null) {
+            throw new RegraDeNegocioException("Cliente não encontrado na base da dados");
+        } else {
+            clienteRepository.delete(cliente);
+            return "Cadastro do cliente excluido da base de dados";
+        }
     }
 
 }

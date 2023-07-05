@@ -3,6 +3,7 @@ package br.com.guilhermeRibeiro.backendGigaBank.repository;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Cliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,6 +13,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     public Cliente findByCpf(String cpf);
 
-    @Query("SELECT * FROM t_cliente WHERE UPPER(nome) = UPPER(:nome)")
-    public List<Cliente> findByNome(String nome);
+    @Query(value = "SELECT * FROM t_cliente WHERE UPPER(t_cliente.nome) LIKE CONCAT('%',UPPER(:nome),'%')", nativeQuery = true)
+    public List<Cliente> findByNome(@Param("nome") String nome);
 }

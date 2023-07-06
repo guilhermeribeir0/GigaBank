@@ -44,12 +44,10 @@ public class ClienteService {
         return clientes;
     }
 
-    public Cliente cadastrarCliente(ClienteDTO clienteDTO) {
-        if (clienteDTO.getNome() == null || clienteDTO.getCpf() == null || clienteDTO.getEmail() == null) {
+    public Cliente cadastrarCliente(Cliente cliente) {
+        if (cliente.getNome() == null || cliente.getCpf() == null || cliente.getEmail() == null) {
             throw new ValidacaoException("Verifique as informações e tente novamente");
         }
-        Cliente cliente = new Cliente();
-        BeanUtils.copyProperties(cliente, clienteDTO);
         clienteRepository.save(cliente);
 
         return cliente;

@@ -36,7 +36,7 @@ public class SwaggerConfig {
     private ApiInfo buildApiInfo() {
         return new ApiInfoBuilder()
                 .title("API GigaBank")
-                .description("API para sistemma simples de banco")
+                .description("API para sistema simples de banco")
                 .version("1.0.0")
                 .build();
     }

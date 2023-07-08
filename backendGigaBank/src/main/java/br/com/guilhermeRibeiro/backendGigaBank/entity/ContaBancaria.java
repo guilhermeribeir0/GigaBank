@@ -4,6 +4,7 @@ import lombok.*;
 import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
@@ -19,14 +20,17 @@ public class ContaBancaria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @Column(length = 4)
     private String agencia;
 
+    @NotNull
     @Column(length = 6)
     private String numero;
 
-    private BigDecimal saldo;
+    private Double saldo;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;

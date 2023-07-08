@@ -20,31 +20,37 @@ public class ClienteController {
 
     @GetMapping
     public @ResponseBody ResponseEntity<List<Cliente>> listaTodosOsClientes() {
-        return clienteService.listarTodosOsClientes();
+        List<Cliente> listaDeClientes = clienteService.listarTodosOsClientes();
+        return new ResponseEntity<>(listaDeClientes, HttpStatus.OK);
     }
 
     @GetMapping(value = "cpf/{cpf}")
     public @ResponseBody ResponseEntity<Cliente> buscaPorCpf(@PathVariable String cpf) {
-        return clienteService.buscarClientePorCpf(cpf);
+        Cliente cliente = clienteService.buscarClientePorCpf(cpf);
+        return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
 
     @GetMapping(value = "nome/{nome}")
     public @ResponseBody ResponseEntity<List<ClienteDTO>> buscaPorNome(@PathVariable String nome) {
-        return clienteService.buscarClientePorNome(nome);
+        List<ClienteDTO> clientes = clienteService.buscarClientePorNome(nome);
+        return new ResponseEntity<>(clientes, HttpStatus.OK);
     }
 
     @PostMapping
     public @ResponseBody ResponseEntity<Cliente> cadastrar(@RequestBody ClienteDTO clienteDTO) {
-        return clienteService.cadastrarCliente(clienteDTO);
+        Cliente cliente = clienteService.cadastrarCliente(clienteDTO);
+        return new ResponseEntity<>(cliente, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "atualizar/{cpf}")
     public @ResponseBody ResponseEntity<Cliente> atualizarCadastro(@PathVariable String cpf, @RequestBody ClienteDTO clienteDTO) {
-        return clienteService.atualizarCadastroCliente(cpf, clienteDTO);
+        Cliente clienteAtualizado = clienteService.atualizarCadastroCliente(cpf, clienteDTO);
+        return new ResponseEntity<>(clienteAtualizado, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{cpf}")
-    public @ResponseBody ResponseEntity<String> deletarCadastro(@PathVariable String cpf) {
-        return clienteService.deletarCadastroCliente(cpf);
+    public @ResponseBody ResponseEntity<Void> deletarCadastro(@PathVariable String cpf) {
+        clienteService.deletarCadastroCliente(cpf);
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 }

@@ -20,9 +20,10 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String nome;
-
     @CPF
+    @NotNull
     @Column(length = 11)
     private String cpf;
 

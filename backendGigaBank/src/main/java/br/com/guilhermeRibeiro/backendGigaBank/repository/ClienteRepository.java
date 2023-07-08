@@ -13,6 +13,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     public Cliente findByCpf(String cpf);
 
-    @Query(value = "SELECT * FROM t_cliente WHERE UPPER(t_cliente.nome) LIKE CONCAT('%',UPPER(:nome),'%')", nativeQuery = true)
+    @Query(value = "SELECT * FROM t_clientes WHERE UPPER(t_clientes.nome) LIKE CONCAT('%',UPPER(:nome),'%')", nativeQuery = true)
     public List<Cliente> findByNome(@Param("nome") String nome);
 }

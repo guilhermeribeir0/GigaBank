@@ -35,5 +35,5 @@ public class ContaBancaria {
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;
 
-    private Boolean ativo;
+    private Boolean ativa;
 }

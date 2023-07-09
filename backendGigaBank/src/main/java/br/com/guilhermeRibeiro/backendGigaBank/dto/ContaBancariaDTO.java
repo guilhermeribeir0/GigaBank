@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class ContaBancariaDTO {
 
-    private String clienteNome;
+    private String clienteCpf;
 
     private String numero;
 

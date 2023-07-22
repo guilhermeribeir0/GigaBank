@@ -6,7 +6,7 @@ public class TipoOperacaoUtil {
 
     public static final String DEPOSITO = "Depósito";
 
-    public static final String TRANSFERENCIA_RECEBIDA = "Transferencia Recebida";
+    public static final String TRANSFERENCIA_RECEBIDA = "Transferência Recebida";
 
-    public static final String TRANSFERENCIA_ENVIADA = "Transferencia Enviada";
+    public static final String TRANSFERENCIA_ENVIADA = "Transferência Enviada";
 }

@@ -9,10 +9,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "t_contaBancaria")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @EqualsAndHashCode
 public class ContaBancaria {
 

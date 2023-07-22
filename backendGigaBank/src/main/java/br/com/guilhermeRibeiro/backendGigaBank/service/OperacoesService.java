@@ -6,6 +6,7 @@ import br.com.guilhermeRibeiro.backendGigaBank.dto.TransferenciaDTO;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.ContaBancaria;
 import br.com.guilhermeRibeiro.backendGigaBank.exception.ValidacaoException;
 import br.com.guilhermeRibeiro.backendGigaBank.repository.ContaBancariaRepository;
+import br.com.guilhermeRibeiro.backendGigaBank.util.TipoOperacaoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,9 @@ public class OperacoesService {
     @Autowired
     private ContaBancariaService contaBancariaService;
 
+    @Autowired
+    private ExtratoService extratoService;
+
     public void depositar(DepositoDTO depositoDTO, Boolean transferencia) {
         ContaBancaria contaBancaria = contaBancariaService.buscarContaPorAgenciaENumero(depositoDTO.getAgenciaConta(), depositoDTO.getNumeroConta());
 
@@ -28,6 +32,12 @@ public class OperacoesService {
 
         contaBancaria.setSaldo(contaBancaria.getSaldo() + depositoDTO.getValor());
         contaBancariaRepository.save(contaBancaria);
+
+        if (!transferencia) {
+            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.DEPOSITO, depositoDTO.getValor());
+        } else {
+            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.TRANSFERENCIA_RECEBIDA, depositoDTO.getValor());
+        }
     }
 
     public void sacar(SaqueDTO saqueDTO, Boolean transferencia) {
@@ -41,6 +51,12 @@ public class OperacoesService {
 
         contaBancaria.setSaldo(contaBancaria.getSaldo() - saqueDTO.getValor());
         contaBancariaRepository.save(contaBancaria);
+
+        if (!transferencia) {
+            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.SAQUE, saqueDTO.getValor());
+        } else {
+            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.TRANSFERENCIA_ENVIADA, saqueDTO.getValor());
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)

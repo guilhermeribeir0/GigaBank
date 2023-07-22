@@ -9,10 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "t_clientes")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @EqualsAndHashCode
 public class Cliente {
 

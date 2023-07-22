@@ -1,5 +1,6 @@
 package br.com.guilhermeRibeiro.backendGigaBank.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,5 +15,6 @@ public class ExtratoDTO implements Serializable {
 
     private String tipoOperacao;
 
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime dataOperacao;
 }

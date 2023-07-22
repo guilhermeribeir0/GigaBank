@@ -25,7 +25,6 @@ public class OperacoesService {
 
     public void depositar(DepositoDTO depositoDTO, Boolean transferencia) {
         ContaBancaria contaBancaria = contaBancariaService.buscarContaPorAgenciaENumero(depositoDTO.getAgenciaConta(), depositoDTO.getNumeroConta());
-
         if (contaBancaria == null) {
             throw new ValidacaoException("Operação inválida");
         }
@@ -42,7 +41,6 @@ public class OperacoesService {
 
     public void sacar(SaqueDTO saqueDTO, Boolean transferencia) {
         ContaBancaria contaBancaria = contaBancariaService.buscarContaPorAgenciaENumero(saqueDTO.getAgenciaConta(), saqueDTO.getNumeroConta());
-
         if (contaBancaria == null) {
             throw new ValidacaoException("Operação inválida");
         } else if (contaBancaria.getSaldo() < saqueDTO.getValor()) {

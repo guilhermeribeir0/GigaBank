@@ -26,7 +26,6 @@ public class ContaBancariaService {
 
     public ContaBancaria buscarContaPorAgenciaENumero(String agencia, String numeroConta) {
         ContaBancaria contaBancaria = contaBancariaRepository.findByAgenciaAndNumero(agencia, numeroConta);
-
         if (contaBancaria == null) {
             throw new ValidacaoException("Conta bancária não encontrada");
         }

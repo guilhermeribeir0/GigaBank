@@ -76,7 +76,7 @@ public class ClienteService {
             clienteRepository.save(cliente);
             return cliente;
 
-        } catch (NullPointerException exception) {
+        } catch (Exception exception) {
             throw new RegraDeNegocioException(exception.getMessage());
         }
     }

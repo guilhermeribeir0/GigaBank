@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  h1 {
+    font-weight: 500;
+  }
+
+  mat-card {
+    margin-top: 200px;
+    width: 20%;
+    padding: 20px;
+    border: 4px solid #6D42BA;
+    border-radius: 20px;
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    button {
+      font-size: 1.2em;
+      width: 40%;
+    }
+  }
+}

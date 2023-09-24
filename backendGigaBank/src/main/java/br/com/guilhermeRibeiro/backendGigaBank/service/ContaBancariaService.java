@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ContaBancariaService {
@@ -19,6 +20,9 @@ public class ContaBancariaService {
     @Autowired
     private ClienteService clienteService;
 
+    @Autowired
+    private CartaoService cartaoService;
+
     public List<ContaBancaria> listaTodasAsContas() {
         List<ContaBancaria> listaContas = contaBancariaRepository.findAll();
         return listaContas;
@@ -26,27 +30,32 @@ public class ContaBancariaService {
 
     public ContaBancaria buscarContaPorAgenciaENumero(String agencia, String numeroConta) {
         ContaBancaria contaBancaria = contaBancariaRepository.findByAgenciaAndNumero(agencia, numeroConta);
-        if (contaBancaria == null) {
-            throw new ValidacaoException("Conta bancária não encontrada");
+        if (Objects.isNull(contaBancaria)) {
+            throw new RuntimeException(ValidacaoException.CONTA_NAO_CADASTRADA_EXCEPTION);
         }
+        return contaBancaria;
+    }
 
+    public ContaBancaria buscarContaPorCliente(String cpfCliente) {
+        Cliente cliente = clienteService.buscarClientePorCpf(cpfCliente);
+        if (Objects.isNull(cliente)) {
+            throw new RuntimeException(ValidacaoException.CLIENTE_NAO_CADASTRADO_EXCEPTION);
+        }
+        ContaBancaria contaBancaria = contaBancariaRepository.findByClienteCpf(cpfCliente);
+        if (Objects.isNull(contaBancaria)) {
+            throw new RuntimeException(ValidacaoException.CLIENTE_SEM_CONTA_VINCULADA_EXCEPTION);
+        }
         return contaBancaria;
     }
 
     public ContaBancaria cadastrarContaBancaria(ContaBancariaDTO contaBancariaDTO) {
         Cliente cliente = clienteService.buscarClientePorCpf(contaBancariaDTO.getClienteCpf());
-        if (cliente == null) {
-            throw new ValidacaoException("Cliente não encontrado");
+        if (Objects.isNull(cliente)) {
+            throw new RuntimeException(ValidacaoException.CLIENTE_NAO_CADASTRADO_EXCEPTION);
         }
-
-        ContaBancaria contaBancaria = new ContaBancaria();
-        contaBancaria.setAgencia(contaBancariaDTO.getAgencia());
-        contaBancaria.setNumero(contaBancariaDTO.getNumero());
-        contaBancaria.setSaldo(contaBancariaDTO.getSaldo());
-        contaBancaria.setCliente(cliente);
-        contaBancaria.setAtiva(contaBancariaDTO.getAtiva());
+        ContaBancaria contaBancaria = new ContaBancaria(contaBancariaDTO, cliente);
         contaBancariaRepository.save(contaBancaria);
-
+        cartaoService.cadastrar(contaBancaria);
         return contaBancaria;
     }
 }

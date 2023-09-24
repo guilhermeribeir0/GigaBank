@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -23,7 +22,7 @@ public class OperacoesController {
 
     @PostMapping(value = "/saque")
     public @ResponseBody ResponseEntity<Void> sacar(@RequestBody SaqueDTO saqueDTO) {
-        operacoesService.sacar(saqueDTO, false);
+        operacoesService.sacar(saqueDTO, false, false);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -36,6 +35,12 @@ public class OperacoesController {
     @PostMapping(value = "/transferencia")
     public @ResponseBody ResponseEntity<Void> transferir(@RequestBody TransferenciaDTO transferenciaDTO) {
         operacoesService.transferencia(transferenciaDTO);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/compra")
+    public @ResponseBody ResponseEntity<Void> comprar(@RequestBody CompraDTO compraDTO) {
+        operacoesService.compra(compraDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

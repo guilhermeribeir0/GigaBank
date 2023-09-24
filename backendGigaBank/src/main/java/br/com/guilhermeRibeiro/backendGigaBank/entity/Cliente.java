@@ -29,4 +29,13 @@ public class Cliente {
     private String email;
 
     private Boolean ativo;
+
+    public Cliente() {}
+
+    public Cliente(String nome, String cpf, String email, Boolean ativo) {
+        this.nome = nome;
+        this.cpf = cpf;
+        this.email = email;
+        this.ativo = ativo;
+    }
 }

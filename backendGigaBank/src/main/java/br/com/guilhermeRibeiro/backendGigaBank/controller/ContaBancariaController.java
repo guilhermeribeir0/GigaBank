@@ -1,9 +1,6 @@
 package br.com.guilhermeRibeiro.backendGigaBank.controller;
 
 import br.com.guilhermeRibeiro.backendGigaBank.dto.ContaBancariaDTO;
-import br.com.guilhermeRibeiro.backendGigaBank.dto.DepositoDTO;
-import br.com.guilhermeRibeiro.backendGigaBank.dto.SaqueDTO;
-import br.com.guilhermeRibeiro.backendGigaBank.dto.TransferenciaDTO;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.ContaBancaria;
 import br.com.guilhermeRibeiro.backendGigaBank.service.ContaBancariaService;
 import org.springframework.beans.factory.annotation.Autowired;

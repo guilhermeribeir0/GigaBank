@@ -1,5 +1,6 @@
 package br.com.guilhermeRibeiro.backendGigaBank.entity;
 
+import br.com.guilhermeRibeiro.backendGigaBank.dto.ContaBancariaDTO;
 import lombok.*;
 import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 
@@ -33,4 +34,14 @@ public class ContaBancaria {
     private Cliente cliente;
 
     private Boolean ativa;
+
+    public ContaBancaria() {}
+
+    public ContaBancaria(ContaBancariaDTO contaBancariaDTO, Cliente cliente) {
+        this.agencia = contaBancariaDTO.getAgencia();
+        this.numero = contaBancariaDTO.getNumero();
+        this.saldo = contaBancariaDTO.getSaldo();
+        this.ativa = contaBancariaDTO.getAtiva();
+        this.cliente = cliente;
+    }
 }

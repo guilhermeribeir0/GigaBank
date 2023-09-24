@@ -1,10 +1,10 @@
 package br.com.guilhermeRibeiro.backendGigaBank.controller;
 
 import br.com.guilhermeRibeiro.backendGigaBank.dto.ClienteDTO;
+import br.com.guilhermeRibeiro.backendGigaBank.dto.ClienteMinDTO;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Cliente;
 import br.com.guilhermeRibeiro.backendGigaBank.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,15 +42,15 @@ public class ClienteController {
         return new ResponseEntity<>(cliente, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "atualizar/{cpf}")
-    public @ResponseBody ResponseEntity<Cliente> atualizarCadastro(@PathVariable String cpf, @RequestBody ClienteDTO clienteDTO) {
-        Cliente clienteAtualizado = clienteService.atualizarCadastroCliente(cpf, clienteDTO);
+    @PutMapping(value = "atualizar/{id}")
+    public @ResponseBody ResponseEntity<Cliente> atualizarCadastro(@PathVariable Long id, @RequestBody ClienteMinDTO clienteMinDTO) {
+        Cliente clienteAtualizado = clienteService.atualizarCadastroCliente(id, clienteMinDTO);
         return new ResponseEntity<>(clienteAtualizado, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/{cpf}")
-    public @ResponseBody ResponseEntity<Void> deletarCadastro(@PathVariable String cpf) {
-        clienteService.deletarCadastroCliente(cpf);
-        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+    @PatchMapping(value = "/{id}")
+    public @ResponseBody ResponseEntity<Cliente> desativarOuAtivarCadastro(@PathVariable Long id) {
+        Cliente clienteDesativado = clienteService.desativarOuAtivarCliente(id);
+        return new ResponseEntity<>(clienteDesativado, HttpStatus.OK);
     }
 }

@@ -16,7 +16,7 @@ public class Extrato {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "fk_conta_id")
+    @JoinColumn(name = "id_conta")
     private ContaBancaria contaBancaria;
 
     @Column(name = "tipo_operacao")

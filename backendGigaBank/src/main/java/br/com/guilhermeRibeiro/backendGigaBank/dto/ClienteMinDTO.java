@@ -5,18 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SaqueDTO implements Serializable {
+public class ClienteMinDTO {
 
-    private String numeroConta;
+    private String nome;
 
-    private String agenciaConta;
+    private String email;
 
-    private Double valor;
 
 }

@@ -9,4 +9,6 @@ public interface ContaBancariaRepository extends JpaRepository<ContaBancaria, Lo
 
     public ContaBancaria findByAgenciaAndNumero(String agencia, String numero);
 
+    public ContaBancaria findByClienteCpf(String cpf);
+
 }

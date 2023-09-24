@@ -5,18 +5,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SaqueDTO implements Serializable {
+public class CompraDTO {
 
-    private String numeroConta;
-
-    private String agenciaConta;
-
+    private String cpfCliente;
+    private String numeroCartao;
+    private String cvv;
+    private LocalDate dataVencimento;
     private Double valor;
-
 }

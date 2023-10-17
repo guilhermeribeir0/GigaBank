@@ -8,13 +8,17 @@ import { HomeComponent } from './pages/home/home.component';
 import { Erro404Component } from './pages/erro404/erro404.component';
 import { AppMaterialModule } from './shared/app-material/app-material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SidenavComponent } from './pages/home/sidenav/sidenav.component';
+import { FooterComponent } from './pages/home/footer/footer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent,
-    Erro404Component
+    Erro404Component,
+    SidenavComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

@@ -1,9 +1,11 @@
 package br.com.guilhermeRibeiro.backendGigaBank.service;
 
-import br.com.guilhermeRibeiro.backendGigaBank.dto.ContaBancariaDTO;
+import br.com.guilhermeRibeiro.backendGigaBank.dto.request.contaBancaria.ContaBancariaRequest;
+import br.com.guilhermeRibeiro.backendGigaBank.dto.response.contaBancaria.ContaBancariaResponse;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Cliente;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.ContaBancaria;
 import br.com.guilhermeRibeiro.backendGigaBank.exception.ValidacaoException;
+import br.com.guilhermeRibeiro.backendGigaBank.mapper.contaBancaria.ContaBancariaResponseMapper;
 import br.com.guilhermeRibeiro.backendGigaBank.repository.ContaBancariaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,9 @@ public class ContaBancariaService {
 
     @Autowired
     private CartaoService cartaoService;
+
+    @Autowired
+    private ContaBancariaResponseMapper responseMapper;
 
     public List<ContaBancaria> listaTodasAsContas() {
         List<ContaBancaria> listaContas = contaBancariaRepository.findAll();
@@ -48,14 +53,18 @@ public class ContaBancariaService {
         return contaBancaria;
     }
 
-    public ContaBancaria cadastrarContaBancaria(ContaBancariaDTO contaBancariaDTO) {
-        Cliente cliente = clienteService.buscarClientePorCpf(contaBancariaDTO.getClienteCpf());
+    public ContaBancariaResponse cadastrarContaBancaria(ContaBancariaRequest request) {
+        Cliente cliente = clienteService.buscarClientePorCpf(request.getClienteCpf());
         if (Objects.isNull(cliente)) {
             throw new RuntimeException(ValidacaoException.CLIENTE_NAO_CADASTRADO_EXCEPTION);
         }
-        ContaBancaria contaBancaria = new ContaBancaria(contaBancariaDTO, cliente);
+        ContaBancaria contaBancaria = new ContaBancaria(request, cliente);
         contaBancariaRepository.save(contaBancaria);
         cartaoService.cadastrar(contaBancaria);
-        return contaBancaria;
+        return responseMapper.modelToResponse(contaBancaria);
+    }
+
+    public void atualizarSaldo(ContaBancaria contaBancaria) {
+        contaBancariaRepository.save(contaBancaria);
     }
 }

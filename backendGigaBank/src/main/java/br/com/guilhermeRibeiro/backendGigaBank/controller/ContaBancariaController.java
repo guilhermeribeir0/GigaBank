@@ -1,6 +1,7 @@
 package br.com.guilhermeRibeiro.backendGigaBank.controller;
 
-import br.com.guilhermeRibeiro.backendGigaBank.dto.ContaBancariaDTO;
+import br.com.guilhermeRibeiro.backendGigaBank.dto.request.contaBancaria.ContaBancariaRequest;
+import br.com.guilhermeRibeiro.backendGigaBank.dto.response.contaBancaria.ContaBancariaResponse;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.ContaBancaria;
 import br.com.guilhermeRibeiro.backendGigaBank.service.ContaBancariaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,8 @@ public class ContaBancariaController {
     }
 
     @PostMapping(value = "/cadastro")
-    public @ResponseBody ResponseEntity<ContaBancaria> cadastrarContaBancaria(@RequestBody ContaBancariaDTO contaBancariaDTO) {
-        contaBancariaService.cadastrarContaBancaria(contaBancariaDTO);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public @ResponseBody ResponseEntity<ContaBancariaResponse> cadastrarContaBancaria(@RequestBody ContaBancariaRequest request) {
+        ContaBancariaResponse response = contaBancariaService.cadastrarContaBancaria(request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

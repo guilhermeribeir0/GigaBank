@@ -1,14 +1,11 @@
 package br.com.guilhermeRibeiro.backendGigaBank.entity;
 
-import lombok.EqualsAndHashCode;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "t_cartao")
-@EqualsAndHashCode
 public class Cartao {
 
     @Id

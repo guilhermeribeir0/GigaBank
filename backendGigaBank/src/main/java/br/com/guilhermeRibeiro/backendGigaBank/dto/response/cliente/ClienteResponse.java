@@ -1,40 +1,23 @@
-package br.com.guilhermeRibeiro.backendGigaBank.entity;
+package br.com.guilhermeRibeiro.backendGigaBank.dto.response.cliente;
 
-import br.com.guilhermeRibeiro.backendGigaBank.dto.request.cliente.ClienteRequest;
-import org.hibernate.validator.constraints.br.CPF;
+import java.io.Serializable;
 
-import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
+public class ClienteResponse implements Serializable {
 
-@Entity
-@Table(name = "t_clientes")
-public class Cliente {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotNull
     private String nome;
-    @CPF
-    @NotNull
-    @Column(length = 11)
     private String cpf;
-
-    @Email
-    @Column(length = 40)
     private String email;
-
     private Boolean ativo;
 
-    public Cliente() {}
+    public ClienteResponse() {}
 
-    public Cliente(ClienteRequest request) {
-        this.nome = request.getNome();
-        this.cpf = request.getCpf();
-        this.email = request.getEmail();
-        this.ativo = request.getAtivo();
+    public ClienteResponse(Long id, String nome, String cpf, String email, Boolean ativo) {
+        this.id = id;
+        this.nome = nome;
+        this.cpf = cpf;
+        this.email = email;
+        this.ativo = ativo;
     }
 
     public Long getId() {
@@ -75,5 +58,16 @@ public class Cliente {
 
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
+    }
+
+    @Override
+    public String toString() {
+        return "ClienteResponse{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", email='" + email + '\'' +
+                ", ativo=" + ativo +
+                '}';
     }
 }

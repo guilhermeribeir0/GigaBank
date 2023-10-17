@@ -1,43 +1,27 @@
-package br.com.guilhermeRibeiro.backendGigaBank.entity;
+package br.com.guilhermeRibeiro.backendGigaBank.dto.response.contaBancaria;
 
-import br.com.guilhermeRibeiro.backendGigaBank.dto.request.contaBancaria.ContaBancariaRequest;
+import br.com.guilhermeRibeiro.backendGigaBank.entity.Cliente;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
-@Entity
-@Table(name = "t_contaBancaria")
-public class ContaBancaria {
+public class ContaBancariaResponse implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotNull
-    @Column(length = 4)
     private String agencia;
-
-    @NotNull
-    @Column(length = 6)
     private String numero;
-
     private Double saldo;
-
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "id_cliente")
     private Cliente cliente;
-
     private Boolean ativa;
 
-    public ContaBancaria() {}
+    public ContaBancariaResponse() {}
 
-    public ContaBancaria(ContaBancariaRequest request, Cliente cliente) {
-        this.agencia = request.getAgencia();
-        this.numero = request.getNumero();
-        this.saldo = request.getSaldo();
-        this.ativa = request.getAtiva();
+    public ContaBancariaResponse(Long id, String agencia, String numero, Double saldo, Cliente cliente, Boolean ativa) {
+        this.id = id;
+        this.agencia = agencia;
+        this.numero = numero;
+        this.saldo = saldo;
         this.cliente = cliente;
+        this.ativa = ativa;
     }
 
     public Long getId() {
@@ -86,5 +70,17 @@ public class ContaBancaria {
 
     public void setAtiva(Boolean ativa) {
         this.ativa = ativa;
+    }
+
+    @Override
+    public String toString() {
+        return "ContaBancariariaResponse{" +
+                "id=" + id +
+                ", agencia='" + agencia + '\'' +
+                ", numero='" + numero + '\'' +
+                ", saldo=" + saldo +
+                ", cliente=" + cliente +
+                ", ativa=" + ativa +
+                '}';
     }
 }

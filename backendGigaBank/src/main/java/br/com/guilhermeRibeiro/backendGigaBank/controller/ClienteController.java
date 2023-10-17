@@ -1,8 +1,10 @@
 package br.com.guilhermeRibeiro.backendGigaBank.controller;
 
-import br.com.guilhermeRibeiro.backendGigaBank.dto.ClienteDTO;
-import br.com.guilhermeRibeiro.backendGigaBank.dto.ClienteMinDTO;
+import br.com.guilhermeRibeiro.backendGigaBank.dto.request.cliente.ClienteMinRequest;
+import br.com.guilhermeRibeiro.backendGigaBank.dto.request.cliente.ClienteRequest;
+import br.com.guilhermeRibeiro.backendGigaBank.dto.response.cliente.ClienteResponse;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Cliente;
+import br.com.guilhermeRibeiro.backendGigaBank.mapper.cliente.ClienteResponseMapper;
 import br.com.guilhermeRibeiro.backendGigaBank.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,10 +20,14 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
+    @Autowired
+    private ClienteResponseMapper responseMapper;
+
     @GetMapping
-    public @ResponseBody ResponseEntity<List<Cliente>> listaTodosOsClientes() {
+    public @ResponseBody ResponseEntity<List<ClienteResponse>> listaTodosOsClientes() {
         List<Cliente> listaDeClientes = clienteService.listarTodosOsClientes();
-        return new ResponseEntity<>(listaDeClientes, HttpStatus.OK);
+        List<ClienteResponse> responses = responseMapper.modelListToResponseList(listaDeClientes);
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
     @GetMapping(value = "cpf/{cpf}")
@@ -31,21 +37,24 @@ public class ClienteController {
     }
 
     @GetMapping(value = "nome/{nome}")
-    public @ResponseBody ResponseEntity<List<ClienteDTO>> buscaPorNome(@PathVariable String nome) {
-        List<ClienteDTO> clientes = clienteService.buscarClientePorNome(nome);
-        return new ResponseEntity<>(clientes, HttpStatus.OK);
+    public @ResponseBody ResponseEntity<List<ClienteResponse>> buscaPorNome(@PathVariable String nome) {
+        List<Cliente> clientes = clienteService.buscarClientePorNome(nome);
+        List<ClienteResponse> responses = responseMapper.modelListToResponseList(clientes);
+        return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
     @PostMapping
-    public @ResponseBody ResponseEntity<Cliente> cadastrar(@RequestBody ClienteDTO clienteDTO) {
-        Cliente cliente = clienteService.cadastrarCliente(clienteDTO);
-        return new ResponseEntity<>(cliente, HttpStatus.CREATED);
+    public @ResponseBody ResponseEntity<ClienteResponse> cadastrar(@RequestBody ClienteRequest request) {
+        Cliente cliente = clienteService.cadastrarCliente(request);
+        ClienteResponse response = responseMapper.modelToResponse(cliente);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "atualizar/{id}")
-    public @ResponseBody ResponseEntity<Cliente> atualizarCadastro(@PathVariable Long id, @RequestBody ClienteMinDTO clienteMinDTO) {
-        Cliente clienteAtualizado = clienteService.atualizarCadastroCliente(id, clienteMinDTO);
-        return new ResponseEntity<>(clienteAtualizado, HttpStatus.OK);
+    public @ResponseBody ResponseEntity<ClienteResponse> atualizarCadastro(@PathVariable Long id, @RequestBody ClienteMinRequest minRequest) {
+        Cliente clienteAtualizado = clienteService.atualizarCadastroCliente(id, minRequest);
+        ClienteResponse response = responseMapper.modelToResponse(clienteAtualizado);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PatchMapping(value = "/{id}")

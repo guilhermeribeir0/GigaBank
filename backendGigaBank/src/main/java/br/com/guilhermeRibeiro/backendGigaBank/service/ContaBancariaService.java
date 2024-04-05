@@ -16,17 +16,22 @@ import java.util.Objects;
 @Service
 public class ContaBancariaService {
 
-    @Autowired
-    private ContaBancariaRepository contaBancariaRepository;
+    private final ContaBancariaRepository contaBancariaRepository;
+    private final ContaBancariaResponseMapper responseMapper;
+    private final ClienteService clienteService;
+    private final CartaoService cartaoService;
 
-    @Autowired
-    private ClienteService clienteService;
-
-    @Autowired
-    private CartaoService cartaoService;
-
-    @Autowired
-    private ContaBancariaResponseMapper responseMapper;
+    public ContaBancariaService(
+            ContaBancariaRepository contaBancariaRepository,
+            ContaBancariaResponseMapper responseMapper,
+            ClienteService clienteService,
+            CartaoService cartaoService
+    ) {
+        this.contaBancariaRepository = contaBancariaRepository;
+        this.responseMapper = responseMapper;
+        this.clienteService = clienteService;
+        this.cartaoService = cartaoService;
+    }
 
     public List<ContaBancaria> listaTodasAsContas() {
         List<ContaBancaria> listaContas = contaBancariaRepository.findAll();

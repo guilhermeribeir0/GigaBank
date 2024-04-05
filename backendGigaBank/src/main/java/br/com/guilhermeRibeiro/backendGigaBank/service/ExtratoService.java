@@ -21,11 +21,16 @@ import java.util.stream.Collectors;
 @Service
 public class ExtratoService {
 
-    @Autowired
-    private ExtratoRepository extratoRepository;
+    private final ExtratoRepository extratoRepository;
+    private final ContaBancariaService contaBancariaService;
 
-    @Autowired
-    private ContaBancariaService contaBancariaService;
+    public ExtratoService(
+            ExtratoRepository extratoRepository,
+            ContaBancariaService contaBancariaService
+    ) {
+        this.extratoRepository = extratoRepository;
+        this.contaBancariaService = contaBancariaService;
+    }
 
     public void gerarExtrato(ContaBancaria conta, String tipoOperacao, Double valor) {
         Extrato extrato = new Extrato();

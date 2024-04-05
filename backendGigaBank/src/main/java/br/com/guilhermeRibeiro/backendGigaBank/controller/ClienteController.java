@@ -6,7 +6,6 @@ import br.com.guilhermeRibeiro.backendGigaBank.dto.response.cliente.ClienteRespo
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Cliente;
 import br.com.guilhermeRibeiro.backendGigaBank.mapper.cliente.ClienteResponseMapper;
 import br.com.guilhermeRibeiro.backendGigaBank.service.ClienteService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +16,16 @@ import java.util.List;
 @RequestMapping(value = "/clientes/")
 public class ClienteController {
 
-    @Autowired
-    private ClienteService clienteService;
+    private final ClienteService clienteService;
+    private final ClienteResponseMapper responseMapper;
 
-    @Autowired
-    private ClienteResponseMapper responseMapper;
+    public ClienteController(
+            ClienteService clienteService,
+            ClienteResponseMapper responseMapper
+    ) {
+        this.clienteService = clienteService;
+        this.responseMapper = responseMapper;
+    }
 
     @GetMapping
     public @ResponseBody ResponseEntity<List<ClienteResponse>> listaTodosOsClientes() {

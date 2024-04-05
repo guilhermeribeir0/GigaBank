@@ -5,9 +5,11 @@ import br.com.guilhermeRibeiro.backendGigaBank.dto.request.operacoes.DepositoReq
 import br.com.guilhermeRibeiro.backendGigaBank.dto.request.operacoes.SaqueRequest;
 import br.com.guilhermeRibeiro.backendGigaBank.dto.request.operacoes.TransferenciaRequest;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Cartao;
+import br.com.guilhermeRibeiro.backendGigaBank.entity.Cliente;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.ContaBancaria;
 import br.com.guilhermeRibeiro.backendGigaBank.exception.ValidacaoException;
 import br.com.guilhermeRibeiro.backendGigaBank.repository.ContaBancariaRepository;
+import br.com.guilhermeRibeiro.backendGigaBank.repository.ExtratoRepository;
 import br.com.guilhermeRibeiro.backendGigaBank.util.TipoOperacaoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,17 +20,19 @@ import java.util.Objects;
 @Service
 public class OperacoesService {
 
-    @Autowired
-    private ContaBancariaService contaBancariaService;
+    private final ContaBancariaService contaBancariaService;
+    private final CartaoService cartaoService;
+    private final ExtratoService extratoService;
 
-    @Autowired
-    private CartaoService cartaoService;
-
-    @Autowired
-    private ClienteService clienteService;
-
-    @Autowired
-    private ExtratoService extratoService;
+    public OperacoesService(
+            ContaBancariaService contaBancariaService,
+            CartaoService cartaoService,
+            ExtratoService extratoService
+    ) {
+        this.contaBancariaService = contaBancariaService;
+        this.cartaoService = cartaoService;
+        this.extratoService = extratoService;
+    }
 
     public void depositar(DepositoRequest request, Boolean transferencia) {
         ContaBancaria contaBancaria = contaBancariaService.buscarContaPorAgenciaENumero(request.getAgenciaConta(), request.getNumeroConta());

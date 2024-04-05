@@ -4,7 +4,6 @@ import br.com.guilhermeRibeiro.backendGigaBank.dto.request.contaBancaria.ContaBa
 import br.com.guilhermeRibeiro.backendGigaBank.dto.response.contaBancaria.ContaBancariaResponse;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.ContaBancaria;
 import br.com.guilhermeRibeiro.backendGigaBank.service.ContaBancariaService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +14,11 @@ import java.util.List;
 @RequestMapping(value = "/contas")
 public class ContaBancariaController {
 
-    @Autowired
-    private ContaBancariaService contaBancariaService;
+    private final ContaBancariaService contaBancariaService;
+
+    public ContaBancariaController(ContaBancariaService contaBancariaService) {
+        this.contaBancariaService = contaBancariaService;
+    }
 
     @GetMapping
     public @ResponseBody ResponseEntity<List<ContaBancaria>> listaTodasAsContas() {

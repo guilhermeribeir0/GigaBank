@@ -14,8 +14,11 @@ import java.util.Objects;
 @Service
 public class CartaoService {
 
-    @Autowired
-    private CartaoRepository cartaoRepository;
+    private final CartaoRepository cartaoRepository;
+
+    public CartaoService(CartaoRepository cartaoRepository) {
+        this.cartaoRepository = cartaoRepository;
+    }
 
     public Cartao cadastrar(ContaBancaria contaBancaria) {
             Cartao cartao = new Cartao();

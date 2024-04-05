@@ -17,14 +17,19 @@ import java.util.List;
 @RequestMapping(value = "/operacoes")
 public class OperacoesController {
 
-    @Autowired
-    private OperacoesService operacoesService;
+    private final OperacoesService operacoesService;
+    private final ExtratoService extratoService;
+    private final ExtratoResponseMapper responseMapper;
 
-    @Autowired
-    private ExtratoService extratoService;
-
-    @Autowired
-    private ExtratoResponseMapper responseMapper;
+    public OperacoesController (
+            OperacoesService operacoesService,
+            ExtratoService extratoService,
+            ExtratoResponseMapper responseMapper
+    ) {
+        this.operacoesService = operacoesService;
+        this.extratoService = extratoService;
+        this.responseMapper = responseMapper;
+    }
 
     @PostMapping(value = "/saque")
     public @ResponseBody ResponseEntity<Void> sacar(@RequestBody SaqueRequest request) {

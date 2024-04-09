@@ -4,10 +4,11 @@ import br.com.guilhermeRibeiro.backendGigaBank.dto.request.contaBancaria.ContaBa
 import br.com.guilhermeRibeiro.backendGigaBank.dto.response.contaBancaria.ContaBancariaResponse;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Cliente;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.ContaBancaria;
-import br.com.guilhermeRibeiro.backendGigaBank.exception.ValidacaoException;
+import br.com.guilhermeRibeiro.backendGigaBank.exception.ClienteNaoEncontradoException;
+import br.com.guilhermeRibeiro.backendGigaBank.exception.ClienteSemContaVinculadaException;
+import br.com.guilhermeRibeiro.backendGigaBank.exception.ContaNaoCadastradaException;
 import br.com.guilhermeRibeiro.backendGigaBank.mapper.contaBancaria.ContaBancariaResponseMapper;
 import br.com.guilhermeRibeiro.backendGigaBank.repository.ContaBancariaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,7 +42,7 @@ public class ContaBancariaService {
     public ContaBancaria buscarContaPorAgenciaENumero(String agencia, String numeroConta) {
         ContaBancaria contaBancaria = contaBancariaRepository.findByAgenciaAndNumero(agencia, numeroConta);
         if (Objects.isNull(contaBancaria)) {
-            throw new RuntimeException(ValidacaoException.CONTA_NAO_CADASTRADA_EXCEPTION);
+            throw new ContaNaoCadastradaException(agencia, numeroConta);
         }
         return contaBancaria;
     }
@@ -49,11 +50,11 @@ public class ContaBancariaService {
     public ContaBancaria buscarContaPorCliente(String cpfCliente) {
         Cliente cliente = clienteService.buscarClientePorCpf(cpfCliente);
         if (Objects.isNull(cliente)) {
-            throw new RuntimeException(ValidacaoException.CLIENTE_NAO_CADASTRADO_EXCEPTION);
+            throw new ClienteNaoEncontradoException(cpfCliente);
         }
         ContaBancaria contaBancaria = contaBancariaRepository.findByClienteCpf(cpfCliente);
         if (Objects.isNull(contaBancaria)) {
-            throw new RuntimeException(ValidacaoException.CLIENTE_SEM_CONTA_VINCULADA_EXCEPTION);
+            throw new ClienteSemContaVinculadaException();
         }
         return contaBancaria;
     }
@@ -61,7 +62,7 @@ public class ContaBancariaService {
     public ContaBancariaResponse cadastrarContaBancaria(ContaBancariaRequest request) {
         Cliente cliente = clienteService.buscarClientePorCpf(request.getClienteCpf());
         if (Objects.isNull(cliente)) {
-            throw new RuntimeException(ValidacaoException.CLIENTE_NAO_CADASTRADO_EXCEPTION);
+            throw new ClienteNaoEncontradoException(request.getClienteCpf());
         }
         ContaBancaria contaBancaria = new ContaBancaria(request, cliente);
         contaBancariaRepository.save(contaBancaria);

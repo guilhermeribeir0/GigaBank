@@ -40,13 +40,6 @@ public class ClienteController {
         return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
 
-    @GetMapping(value = "nome/{nome}")
-    public @ResponseBody ResponseEntity<List<ClienteResponse>> buscaPorNome(@PathVariable String nome) {
-        List<Cliente> clientes = clienteService.buscarClientePorNome(nome);
-        List<ClienteResponse> responses = responseMapper.modelListToResponseList(clientes);
-        return new ResponseEntity<>(responses, HttpStatus.OK);
-    }
-
     @PostMapping
     public @ResponseBody ResponseEntity<ClienteResponse> cadastrar(@RequestBody ClienteRequest request) {
         Cliente cliente = clienteService.cadastrarCliente(request);

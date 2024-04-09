@@ -2,10 +2,10 @@ package br.com.guilhermeRibeiro.backendGigaBank.service;
 
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Cartao;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.ContaBancaria;
-import br.com.guilhermeRibeiro.backendGigaBank.exception.ValidacaoException;
+import br.com.guilhermeRibeiro.backendGigaBank.exception.CartaoInvalidoException;
+import br.com.guilhermeRibeiro.backendGigaBank.exception.CartaoNaoVinculadoContaException;
 import br.com.guilhermeRibeiro.backendGigaBank.repository.CartaoRepository;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -35,7 +35,7 @@ public class CartaoService {
     public Cartao buscarCartaoPorNumeroCvvDataVencimento(String numero, String cvv, LocalDate dataVencimento) {
         Cartao cartao = cartaoRepository.findByNumeroAndCvvAndDataVencimento(numero, cvv, dataVencimento);
         if (Objects.isNull(cartao)) {
-            throw new RuntimeException(ValidacaoException.CARTAO_INVALIDO_EXCEPTION);
+            throw new CartaoInvalidoException();
         }
         return cartao;
     }
@@ -43,7 +43,7 @@ public class CartaoService {
     public Cartao buscarCartaoPorContaBancaria(Long idConta) {
         Cartao cartao = cartaoRepository.findByContaBancariaId(idConta);
         if (Objects.isNull(cartao)) {
-            throw new RuntimeException(ValidacaoException.CARTAO_NAO_VINCULADO_A_CONTA_EXCEPTION);
+            throw new CartaoNaoVinculadoContaException(idConta);
         }
         return cartao;
     }

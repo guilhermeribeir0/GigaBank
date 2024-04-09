@@ -5,13 +5,11 @@ import br.com.guilhermeRibeiro.backendGigaBank.dto.request.operacoes.DepositoReq
 import br.com.guilhermeRibeiro.backendGigaBank.dto.request.operacoes.SaqueRequest;
 import br.com.guilhermeRibeiro.backendGigaBank.dto.request.operacoes.TransferenciaRequest;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Cartao;
-import br.com.guilhermeRibeiro.backendGigaBank.entity.Cliente;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.ContaBancaria;
-import br.com.guilhermeRibeiro.backendGigaBank.exception.ValidacaoException;
-import br.com.guilhermeRibeiro.backendGigaBank.repository.ContaBancariaRepository;
-import br.com.guilhermeRibeiro.backendGigaBank.repository.ExtratoRepository;
+import br.com.guilhermeRibeiro.backendGigaBank.exception.CartaoNaoVinculadoContaException;
+import br.com.guilhermeRibeiro.backendGigaBank.exception.ContaNaoCadastradaException;
+import br.com.guilhermeRibeiro.backendGigaBank.exception.SaldoInsuficienteException;
 import br.com.guilhermeRibeiro.backendGigaBank.util.TipoOperacaoUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,9 +33,12 @@ public class OperacoesService {
     }
 
     public void depositar(DepositoRequest request, Boolean transferencia) {
-        ContaBancaria contaBancaria = contaBancariaService.buscarContaPorAgenciaENumero(request.getAgenciaConta(), request.getNumeroConta());
+        String agencia = request.getAgenciaConta();
+        String numeroConta = request.getNumeroConta();
+
+        ContaBancaria contaBancaria = contaBancariaService.buscarContaPorAgenciaENumero(agencia, numeroConta);
         if (contaBancaria == null) {
-            throw new RuntimeException(ValidacaoException.CONTA_NAO_CADASTRADA_EXCEPTION);
+            throw new ContaNaoCadastradaException(agencia, numeroConta);
         }
         contaBancaria.setSaldo(contaBancaria.getSaldo() + request.getValor());
         contaBancariaService.atualizarSaldo(contaBancaria);
@@ -50,11 +51,14 @@ public class OperacoesService {
     }
 
     public void sacar(SaqueRequest request, Boolean transferencia, Boolean compra) {
-        ContaBancaria contaBancaria = contaBancariaService.buscarContaPorAgenciaENumero(request.getAgenciaConta(), request.getNumeroConta());
+        String agencia = request.getAgenciaConta();
+        String numeroConta = request.getNumeroConta();
+
+        ContaBancaria contaBancaria = contaBancariaService.buscarContaPorAgenciaENumero(agencia, numeroConta);
         if (contaBancaria == null) {
-            throw new RuntimeException(ValidacaoException.CONTA_NAO_CADASTRADA_EXCEPTION);
+            throw new ContaNaoCadastradaException(agencia, numeroConta);
         } else if (contaBancaria.getSaldo() < request.getValor()) {
-            throw new RuntimeException(ValidacaoException.SALDO_INSUFICIENTE_EXCEPTION);
+            throw new SaldoInsuficienteException();
         }
 
         contaBancaria.setSaldo(contaBancaria.getSaldo() - request.getValor());
@@ -80,11 +84,11 @@ public class OperacoesService {
     public void compra(CompraRequest request) {
         ContaBancaria contaBancaria = contaBancariaService.buscarContaPorCliente(request.getCpfCliente());
         if (Objects.isNull(contaBancaria)) {
-            throw new RuntimeException(ValidacaoException.CONTA_NAO_CADASTRADA_EXCEPTION);
+            throw new ContaNaoCadastradaException();
         }
         Cartao cartao = cartaoService.buscarCartaoPorContaBancaria(contaBancaria.getId());
         if (Objects.isNull(cartao)) {
-            throw new RuntimeException(ValidacaoException.CARTAO_NAO_VINCULADO_A_CONTA_EXCEPTION);
+            throw new CartaoNaoVinculadoContaException(contaBancaria.getId());
         }
         SaqueRequest saque = new SaqueRequest(contaBancaria.getNumero(), contaBancaria.getAgencia(), request.getValor());
         this.sacar(saque, false, true);

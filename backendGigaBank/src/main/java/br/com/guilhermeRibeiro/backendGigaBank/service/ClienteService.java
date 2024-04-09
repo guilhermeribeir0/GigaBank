@@ -3,11 +3,10 @@ package br.com.guilhermeRibeiro.backendGigaBank.service;
 import br.com.guilhermeRibeiro.backendGigaBank.dto.request.cliente.ClienteMinRequest;
 import br.com.guilhermeRibeiro.backendGigaBank.dto.request.cliente.ClienteRequest;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Cliente;
-import br.com.guilhermeRibeiro.backendGigaBank.exception.ValidacaoException;
+import br.com.guilhermeRibeiro.backendGigaBank.exception.ClienteNaoEncontradoException;
+import br.com.guilhermeRibeiro.backendGigaBank.exception.CpfInvalidoException;
 import br.com.guilhermeRibeiro.backendGigaBank.repository.ClienteRepository;
 import br.com.guilhermeRibeiro.backendGigaBank.util.CpfUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public class ClienteService {
     public Cliente buscarClientePorId(Long id) {
         Optional<Cliente> cliente = clienteRepository.findById(id);
         if (cliente.isEmpty()) {
-            throw new RuntimeException(ValidacaoException.CLIENTE_NAO_CADASTRADO_EXCEPTION);
+            throw new ClienteNaoEncontradoException(id);
         }
         return cliente.get();
     }
@@ -38,21 +37,14 @@ public class ClienteService {
     public Cliente buscarClientePorCpf(String cpf) {
         boolean cpfValido = CpfUtil.validaCPF(cpf);
         if (!cpfValido) {
-            throw new RuntimeException(ValidacaoException.CPF_INVALIDO_EXCEPTION + cpf);
+            throw new CpfInvalidoException(cpf);
         }
         Cliente cliente = clienteRepository.findByCpf(cpf);
 
         if (Objects.isNull(cliente)) {
-            throw new RuntimeException(ValidacaoException.CLIENTE_NAO_CADASTRADO_EXCEPTION);
+            throw new ClienteNaoEncontradoException(cpf);
         }
         return cliente;
-    }
-
-    public List<Cliente> buscarClientePorNome(String nome) {
-        if (StringUtils.isBlank(nome) || StringUtils.isNumeric(nome)) {
-            throw new RuntimeException(ValidacaoException.NOME_INVALIDO_EXCEPTION);
-        }
-        return clienteRepository.findByNome(nome);
     }
 
     public Cliente cadastrarCliente(ClienteRequest request) {
@@ -70,7 +62,7 @@ public class ClienteService {
                     clienteAtualizado.setEmail(request.getEmail());
                     clienteAtualizado.setNome(request.getNome());
                     return clienteRepository.save(clienteAtualizado);
-                }).orElseThrow(() -> new RuntimeException(ValidacaoException.CLIENTE_NAO_CADASTRADO_EXCEPTION)));
+                }).orElseThrow(() -> new ClienteNaoEncontradoException(id)));
         return cliente.get();
     }
 
@@ -84,7 +76,7 @@ public class ClienteService {
                     }
                     clienteRepository.save(cli);
                     return cli;
-                }).orElseThrow(() -> new RuntimeException(ValidacaoException.CLIENTE_NAO_CADASTRADO_EXCEPTION)));
+                }).orElseThrow(() -> new ClienteNaoEncontradoException(id)));
         return cliente.get();
     }
 

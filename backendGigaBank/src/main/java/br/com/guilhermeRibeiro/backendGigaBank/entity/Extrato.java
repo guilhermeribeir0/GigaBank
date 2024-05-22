@@ -1,6 +1,7 @@
 package br.com.guilhermeRibeiro.backendGigaBank.entity;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,7 +19,7 @@ public class Extrato {
     @Column(name = "tipo_operacao")
     private String tipoOperacao;
 
-    private Double valor;
+    private BigDecimal valor;
 
     @Column(name = "data_operacao")
     private LocalDateTime dataOperacao;
@@ -47,11 +48,11 @@ public class Extrato {
         this.tipoOperacao = tipoOperacao;
     }
 
-    public Double getValor() {
+    public BigDecimal getValor() {
         return valor;
     }
 
-    public void setValor(Double valor) {
+    public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
 

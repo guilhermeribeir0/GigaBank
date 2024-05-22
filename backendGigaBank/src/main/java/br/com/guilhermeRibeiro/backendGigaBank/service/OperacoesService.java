@@ -13,6 +13,7 @@ import br.com.guilhermeRibeiro.backendGigaBank.util.TipoOperacaoUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Service
@@ -32,44 +33,42 @@ public class OperacoesService {
         this.extratoService = extratoService;
     }
 
+    @Transactional
     public void depositar(DepositoRequest request, Boolean transferencia) {
         String agencia = request.getAgenciaConta();
         String numeroConta = request.getNumeroConta();
+        BigDecimal valor = BigDecimal.valueOf(request.getValor());
 
-        ContaBancaria contaBancaria = contaBancariaService.buscarContaPorAgenciaENumero(agencia, numeroConta);
-        if (contaBancaria == null) {
-            throw new ContaNaoCadastradaException(agencia, numeroConta);
-        }
-        contaBancaria.setSaldo(contaBancaria.getSaldo() + request.getValor());
+        ContaBancaria contaBancaria = validarCadastroConta(agencia, numeroConta);
+
+        contaBancaria.setSaldo(contaBancaria.getSaldo().add(valor));
         contaBancariaService.atualizarSaldo(contaBancaria);
 
         if (!transferencia) {
-            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.DEPOSITO, request.getValor());
+            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.DEPOSITO, valor);
         } else {
-            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.TRANSFERENCIA_RECEBIDA, request.getValor());
+            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.TRANSFERENCIA_RECEBIDA, valor);
         }
     }
 
+    @Transactional
     public void sacar(SaqueRequest request, Boolean transferencia, Boolean compra) {
         String agencia = request.getAgenciaConta();
         String numeroConta = request.getNumeroConta();
+        BigDecimal valor = BigDecimal.valueOf(request.getValor());
 
-        ContaBancaria contaBancaria = contaBancariaService.buscarContaPorAgenciaENumero(agencia, numeroConta);
-        if (contaBancaria == null) {
-            throw new ContaNaoCadastradaException(agencia, numeroConta);
-        } else if (contaBancaria.getSaldo() < request.getValor()) {
-            throw new SaldoInsuficienteException();
-        }
+        ContaBancaria contaBancaria = validarCadastroConta(agencia, numeroConta);
+        validarSaldo(contaBancaria.getSaldo(), valor);
 
-        contaBancaria.setSaldo(contaBancaria.getSaldo() - request.getValor());
+        contaBancaria.setSaldo(contaBancaria.getSaldo().subtract(valor));
         contaBancariaService.atualizarSaldo(contaBancaria);
 
         if (!transferencia && !compra) {
-            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.SAQUE, request.getValor());
+            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.SAQUE, valor);
         } else if (!compra){
-            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.TRANSFERENCIA_ENVIADA, request.getValor());
+            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.TRANSFERENCIA_ENVIADA, valor);
         } else if (!transferencia){
-            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.COMPRA, request.getValor());
+            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.COMPRA, valor);
         }
     }
 
@@ -82,15 +81,48 @@ public class OperacoesService {
     }
 
     public void compra(CompraRequest request) {
-        ContaBancaria contaBancaria = contaBancariaService.buscarContaPorCliente(request.getCpfCliente());
+        try {
+            ContaBancaria contaBancaria = buscarContaBancariaPorCliente(request.getCpfCliente());
+            Cartao cartao = buscarCartaoPorContaBancaria(contaBancaria.getId());
+
+            SaqueRequest saque = new SaqueRequest(contaBancaria.getNumero(), contaBancaria.getAgencia(), request.getValor());
+            this.sacar(saque, false, true);
+        } catch (ContaNaoCadastradaException | CartaoNaoVinculadoContaException exception) {
+            String.format("Erro ao realizar operacao. %s", exception.getMessage());
+        }
+    }
+
+    private ContaBancaria validarCadastroConta(String agencia, String numeroConta) {
+        ContaBancaria contaBancaria = contaBancariaService.buscarContaPorAgenciaENumero(agencia, numeroConta);
+
+        if (contaBancaria == null) {
+            throw new ContaNaoCadastradaException(agencia, numeroConta);
+        }
+
+        return contaBancaria;
+    }
+
+    private void validarSaldo(BigDecimal saldo, BigDecimal valor) {
+        if (saldo.doubleValue() < valor.doubleValue()) {
+            throw new SaldoInsuficienteException();
+        }
+    }
+
+    private ContaBancaria buscarContaBancariaPorCliente(String cpf) {
+        ContaBancaria contaBancaria = contaBancariaService.buscarContaPorCliente(cpf);
         if (Objects.isNull(contaBancaria)) {
             throw new ContaNaoCadastradaException();
         }
-        Cartao cartao = cartaoService.buscarCartaoPorContaBancaria(contaBancaria.getId());
+
+        return contaBancaria;
+    }
+
+    private Cartao buscarCartaoPorContaBancaria(Long idConta) {
+        Cartao cartao = cartaoService.buscarCartaoPorContaBancaria(idConta);
         if (Objects.isNull(cartao)) {
-            throw new CartaoNaoVinculadoContaException(contaBancaria.getId());
+            throw new CartaoNaoVinculadoContaException(idConta);
         }
-        SaqueRequest saque = new SaqueRequest(contaBancaria.getNumero(), contaBancaria.getAgencia(), request.getValor());
-        this.sacar(saque, false, true);
+
+        return cartao;
     }
 }

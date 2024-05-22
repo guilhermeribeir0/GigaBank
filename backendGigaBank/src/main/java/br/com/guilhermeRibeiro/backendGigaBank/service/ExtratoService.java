@@ -7,6 +7,7 @@ import br.com.guilhermeRibeiro.backendGigaBank.exception.NaoExisteMovimentosExce
 import br.com.guilhermeRibeiro.backendGigaBank.repository.ExtratoRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -27,7 +28,7 @@ public class ExtratoService {
         this.contaBancariaService = contaBancariaService;
     }
 
-    public void gerarExtrato(ContaBancaria conta, String tipoOperacao, Double valor) {
+    public void gerarExtrato(ContaBancaria conta, String tipoOperacao, BigDecimal valor) {
         Extrato extrato = new Extrato();
         LocalDateTime dataOperacao = LocalDateTime.now();
         extrato.setContaBancaria(conta);

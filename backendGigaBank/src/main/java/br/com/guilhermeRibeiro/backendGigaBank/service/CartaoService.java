@@ -21,13 +21,8 @@ public class CartaoService {
     }
 
     public Cartao cadastrar(ContaBancaria contaBancaria) {
-            Cartao cartao = new Cartao();
-            LocalDate dataVencimento = LocalDate.now().plusYears(4);
-            cartao.setNumero(gerarNumeroCartao());
-            cartao.setCvv(gerarCvv());
+            Cartao cartao = criarCartao();
             cartao.setContaBancaria(contaBancaria);
-            cartao.setDataVencimento(dataVencimento);
-            cartao.setAtivo(true);
             cartaoRepository.save(cartao);
             return cartao;
     }
@@ -45,6 +40,18 @@ public class CartaoService {
         if (Objects.isNull(cartao)) {
             throw new CartaoNaoVinculadoContaException(idConta);
         }
+        return cartao;
+    }
+
+    private Cartao criarCartao() {
+        Cartao cartao = new Cartao();
+        LocalDate dataVencimento = LocalDate.now().plusYears(4);
+
+        cartao.setNumero(gerarNumeroCartao());
+        cartao.setCvv(gerarCvv());
+        cartao.setDataVencimento(dataVencimento);
+        cartao.setAtivo(true);
+
         return cartao;
     }
 

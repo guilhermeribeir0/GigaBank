@@ -6,10 +6,12 @@ import br.com.guilhermeRibeiro.backendGigaBank.exception.CartaoInvalidoException
 import br.com.guilhermeRibeiro.backendGigaBank.exception.CartaoNaoVinculadoContaException;
 import br.com.guilhermeRibeiro.backendGigaBank.repository.CartaoRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 @Service
 public class CartaoService {
@@ -24,6 +26,7 @@ public class CartaoService {
             Cartao cartao = criarCartao();
             cartao.setContaBancaria(contaBancaria);
             cartaoRepository.save(cartao);
+
             return cartao;
     }
 

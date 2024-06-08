@@ -12,7 +12,7 @@ public abstract class ContaBancariaResponseMapper {
     public abstract ContaBancariaResponse modelToResponse(ContaBancaria contaBancaria);
 
     @AfterMapping
-    protected void mapearCliente(@MappingTarget ContaBancariaResponse response) {
-        response.getCliente().setCpf("***"+response.getCliente().getCpf().substring(3, 9)+"**");
+    protected void mapearCpfCliente(@MappingTarget ContaBancariaResponse response) {
+        response.getCliente().setCpf("***" + response.getCliente().getCpf().substring(3, 9) + "**");
     }
 }

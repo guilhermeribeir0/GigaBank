@@ -36,7 +36,7 @@ public class ContaBancaria {
     public ContaBancaria(ContaBancariaRequest request, Cliente cliente) {
         this.agencia = request.getAgencia();
         this.numero = request.getNumero();
-        this.saldo = request.getSaldo();
+        this.saldo = BigDecimal.valueOf(request.getSaldo());
         this.ativa = request.getAtiva();
         this.cliente = cliente;
     }

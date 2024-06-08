@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface ExtratoRepository extends JpaRepository<Extrato, Long> {
 
-    List<Extrato> findByContaBancaria(ContaBancaria contaBancaria);
+    List<Extrato> findByContaBancariaId(Long idConta);
 }

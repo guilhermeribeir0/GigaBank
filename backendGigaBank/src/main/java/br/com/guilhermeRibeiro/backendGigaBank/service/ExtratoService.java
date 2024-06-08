@@ -43,7 +43,7 @@ public class ExtratoService {
         if (Objects.isNull(conta)) {
             throw new ContaNaoCadastradaException(agencia, numeroConta);
         }
-        List<Extrato> movimentos = extratoRepository.findByContaBancaria(conta);
+        List<Extrato> movimentos = extratoRepository.findByContaBancariaId(conta.getId());
         if (Objects.isNull(movimentos) || movimentos.isEmpty()) {
             throw new NaoExisteMovimentosException();
         }

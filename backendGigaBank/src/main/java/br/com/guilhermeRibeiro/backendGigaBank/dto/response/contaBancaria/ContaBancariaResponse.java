@@ -3,19 +3,20 @@ package br.com.guilhermeRibeiro.backendGigaBank.dto.response.contaBancaria;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Cliente;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 public class ContaBancariaResponse implements Serializable {
 
     private Long id;
     private String agencia;
     private String numero;
-    private Double saldo;
+    private BigDecimal saldo;
     private Cliente cliente;
     private Boolean ativa;
 
     public ContaBancariaResponse() {}
 
-    public ContaBancariaResponse(Long id, String agencia, String numero, Double saldo, Cliente cliente, Boolean ativa) {
+    public ContaBancariaResponse(Long id, String agencia, String numero, BigDecimal saldo, Cliente cliente, Boolean ativa) {
         this.id = id;
         this.agencia = agencia;
         this.numero = numero;
@@ -48,11 +49,11 @@ public class ContaBancariaResponse implements Serializable {
         this.numero = numero;
     }
 
-    public Double getSaldo() {
+    public BigDecimal getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(Double saldo) {
+    public void setSaldo(BigDecimal saldo) {
         this.saldo = saldo;
     }
 

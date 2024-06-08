@@ -9,5 +9,4 @@ class GigaBankApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

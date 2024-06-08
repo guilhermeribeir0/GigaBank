@@ -34,10 +34,18 @@ public class ClienteController {
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 
+    @GetMapping(value = "id/{id}")
+    public @ResponseBody ResponseEntity<ClienteResponse> buscaPorId(@PathVariable Long id) {
+        Cliente cliente = clienteService.buscarClientePorId(id);
+        ClienteResponse response = responseMapper.modelToResponse(cliente);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @GetMapping(value = "cpf/{cpf}")
-    public @ResponseBody ResponseEntity<Cliente> buscaPorCpf(@PathVariable String cpf) {
+    public @ResponseBody ResponseEntity<ClienteResponse> buscaPorCpf(@PathVariable String cpf) {
         Cliente cliente = clienteService.buscarClientePorCpf(cpf);
-        return new ResponseEntity<>(cliente, HttpStatus.OK);
+        ClienteResponse response = responseMapper.modelToResponse(cliente);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping

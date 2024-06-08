@@ -10,7 +10,6 @@ import br.com.guilhermeRibeiro.backendGigaBank.util.CpfUtil;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -35,16 +34,15 @@ public class ClienteService {
     }
 
     public Cliente buscarClientePorCpf(String cpf) {
-        boolean cpfValido = CpfUtil.validaCPF(cpf);
-        if (!cpfValido) {
+        if (!CpfUtil.validaCPF(cpf)) {
             throw new CpfInvalidoException(cpf);
         }
-        Cliente cliente = clienteRepository.findByCpf(cpf);
 
-        if (Objects.isNull(cliente)) {
+        Optional<Cliente> cliente = clienteRepository.findByCpf(cpf);
+        if (cliente.isEmpty()) {
             throw new ClienteNaoEncontradoException(cpf);
         }
-        return cliente;
+        return cliente.get();
     }
 
     public Cliente cadastrarCliente(ClienteRequest request) {
@@ -57,27 +55,25 @@ public class ClienteService {
     }
 
     public Cliente atualizarCadastroCliente(Long id, ClienteMinRequest request) {
-        Optional<Cliente> cliente = Optional.of(clienteRepository.findById(id)
-                .map(clienteAtualizado -> {
-                    clienteAtualizado.setEmail(request.getEmail());
-                    clienteAtualizado.setNome(request.getNome());
-                    return clienteRepository.save(clienteAtualizado);
-                }).orElseThrow(() -> new ClienteNaoEncontradoException(id)));
-        return cliente.get();
+        return clienteRepository.findById(id)
+                    .map(clienteAtualizado -> {
+                        clienteAtualizado.setEmail(request.getEmail());
+                        clienteAtualizado.setNome(request.getNome());
+                        return clienteRepository.save(clienteAtualizado);
+                    }).orElseThrow(() -> new ClienteNaoEncontradoException(id));
     }
 
     public Cliente desativarOuAtivarCliente(Long id) {
-        Optional<Cliente> cliente = Optional.of(clienteRepository.findById(id)
-                .map(cli -> {
-                    if (!cli.getAtivo()) {
-                        cli.setAtivo(true);
-                    } else {
-                        cli.setAtivo(false);
-                    }
-                    clienteRepository.save(cli);
-                    return cli;
-                }).orElseThrow(() -> new ClienteNaoEncontradoException(id)));
-        return cliente.get();
+        return clienteRepository.findById(id)
+                    .map(cli -> {
+                        if (!cli.getAtivo()) {
+                            cli.setAtivo(true);
+                        } else {
+                            cli.setAtivo(false);
+                        }
+                        clienteRepository.save(cli);
+                        return cli;
+                    }).orElseThrow(() -> new ClienteNaoEncontradoException(id));
     }
 
 }

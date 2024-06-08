@@ -3,6 +3,7 @@ package br.com.guilhermeRibeiro.backendGigaBank.controller;
 import br.com.guilhermeRibeiro.backendGigaBank.dto.request.contaBancaria.ContaBancariaRequest;
 import br.com.guilhermeRibeiro.backendGigaBank.dto.response.contaBancaria.ContaBancariaResponse;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.ContaBancaria;
+import br.com.guilhermeRibeiro.backendGigaBank.mapper.contaBancaria.ContaBancariaResponseMapper;
 import br.com.guilhermeRibeiro.backendGigaBank.service.ContaBancariaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,12 @@ import java.util.List;
 public class ContaBancariaController {
 
     private final ContaBancariaService contaBancariaService;
+    private final ContaBancariaResponseMapper responseMapper;
 
-    public ContaBancariaController(ContaBancariaService contaBancariaService) {
+    public ContaBancariaController(ContaBancariaService contaBancariaService,
+                                   ContaBancariaResponseMapper contaBancariaResponseMapper) {
         this.contaBancariaService = contaBancariaService;
+        this.responseMapper = contaBancariaResponseMapper;
     }
 
     @GetMapping
@@ -28,7 +32,8 @@ public class ContaBancariaController {
 
     @PostMapping(value = "/cadastro")
     public @ResponseBody ResponseEntity<ContaBancariaResponse> cadastrarContaBancaria(@RequestBody ContaBancariaRequest request) {
-        ContaBancariaResponse response = contaBancariaService.cadastrarContaBancaria(request);
+        ContaBancaria contaBancaria = contaBancariaService.cadastrarContaBancaria(request);
+        ContaBancariaResponse response = responseMapper.modelToResponse(contaBancaria);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

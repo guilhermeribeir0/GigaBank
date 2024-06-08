@@ -1,7 +1,5 @@
 package br.com.guilhermeRibeiro.backendGigaBank.dto.request.contaBancaria;
 
-import java.math.BigDecimal;
-
 public class ContaBancariaRequest {
 
     private String clienteCpf;
@@ -10,7 +8,7 @@ public class ContaBancariaRequest {
 
     private String agencia;
 
-    private BigDecimal saldo;
+    private Double saldo;
 
     private Boolean ativa;
 
@@ -38,11 +36,11 @@ public class ContaBancariaRequest {
         this.agencia = agencia;
     }
 
-    public BigDecimal getSaldo() {
+    public Double getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(BigDecimal saldo) {
+    public void setSaldo(Double saldo) {
         this.saldo = saldo;
     }
 

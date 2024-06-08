@@ -12,8 +12,8 @@ import java.util.Optional;
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
-    public Cliente findByCpf(String cpf);
+    Optional<Cliente> findByCpf(String cpf);
 
     @Query(value = "SELECT * FROM t_clientes WHERE UPPER(t_clientes.nome) LIKE CONCAT('%',UPPER(:nome),'%')", nativeQuery = true)
-    public List<Cliente> findByNome(@Param("nome") String nome);
+    List<Cliente> findByNome(@Param("nome") String nome);
 }

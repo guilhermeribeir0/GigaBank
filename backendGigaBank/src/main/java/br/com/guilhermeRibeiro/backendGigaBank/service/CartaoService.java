@@ -6,12 +6,10 @@ import br.com.guilhermeRibeiro.backendGigaBank.exception.CartaoInvalidoException
 import br.com.guilhermeRibeiro.backendGigaBank.exception.CartaoNaoVinculadoContaException;
 import br.com.guilhermeRibeiro.backendGigaBank.repository.CartaoRepository;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Objects;
-import java.util.logging.Logger;
+import java.util.Optional;
 
 @Service
 public class CartaoService {
@@ -31,19 +29,19 @@ public class CartaoService {
     }
 
     public Cartao buscarCartaoPorNumeroCvvDataVencimento(String numero, String cvv, LocalDate dataVencimento) {
-        Cartao cartao = cartaoRepository.findByNumeroAndCvvAndDataVencimento(numero, cvv, dataVencimento);
-        if (Objects.isNull(cartao)) {
+        Optional<Cartao> cartao = cartaoRepository.findByNumeroAndCvvAndDataVencimento(numero, cvv, dataVencimento);
+        if (cartao.isEmpty()) {
             throw new CartaoInvalidoException();
         }
-        return cartao;
+        return cartao.get();
     }
 
     public Cartao buscarCartaoPorContaBancaria(Long idConta) {
-        Cartao cartao = cartaoRepository.findByContaBancariaId(idConta);
-        if (Objects.isNull(cartao)) {
+        Optional<Cartao> cartao = cartaoRepository.findByContaBancariaId(idConta);
+        if (cartao.isEmpty()) {
             throw new CartaoNaoVinculadoContaException(idConta);
         }
-        return cartao;
+        return cartao.get();
     }
 
     private Cartao criarCartao() {
@@ -72,7 +70,7 @@ public class CartaoService {
                 StringUtils.leftPad(num, 4, "0");
                 numero = numero.concat(num);
             }
-        } while (cartaoRepository.findByNumero(numero) != null);
+        } while (cartaoRepository.findByNumero(numero).isEmpty());
 
         return numero;
     }
@@ -89,7 +87,7 @@ public class CartaoService {
             String num = Integer.toString(rand);
             StringUtils.leftPad(num, 4, "0");
             cvv = cvv.concat(num);
-        } while (cartaoRepository.findByCvv(cvv) != null);
+        } while (cartaoRepository.findByCvv(cvv).isEmpty());
 
         return cvv;
     }

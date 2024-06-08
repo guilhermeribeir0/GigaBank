@@ -5,15 +5,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Repository
 public interface CartaoRepository extends JpaRepository<Cartao, Long> {
 
-    public Cartao findByNumero(String numero);
+    Optional<Cartao> findByNumero(String numero);
 
-    public Cartao findByCvv(String cvv);
+    Optional<Cartao> findByCvv(String cvv);
 
-    public Cartao findByNumeroAndCvvAndDataVencimento(String numero, String cvv, LocalDate dataVencimento);
+    Optional<Cartao> findByNumeroAndCvvAndDataVencimento(String numero, String cvv, LocalDate dataVencimento);
 
-    public Cartao findByContaBancariaId(Long idConta);
+    Optional<Cartao> findByContaBancariaId(Long idConta);
 }

@@ -1,5 +1,11 @@
 package br.com.guilhermeRibeiro.backendGigaBank.service;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import br.com.guilhermeRibeiro.backendGigaBank.dto.request.operacoes.CompraRequest;
 import br.com.guilhermeRibeiro.backendGigaBank.dto.request.operacoes.DepositoRequest;
 import br.com.guilhermeRibeiro.backendGigaBank.dto.request.operacoes.SaqueRequest;
@@ -10,27 +16,22 @@ import br.com.guilhermeRibeiro.backendGigaBank.exception.CartaoNaoVinculadoConta
 import br.com.guilhermeRibeiro.backendGigaBank.exception.ContaNaoCadastradaException;
 import br.com.guilhermeRibeiro.backendGigaBank.exception.SaldoInsuficienteException;
 import br.com.guilhermeRibeiro.backendGigaBank.util.TipoOperacaoUtil;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.util.Objects;
 
 @Service
-public class OperacoesService {
+public class OperationService {
 
-    private final ContaBancariaService contaBancariaService;
+    private final AccountService accountService;
     private final CardService cardService;
-    private final ExtratoService extratoService;
+    private final ExtractService extractService;
 
-    public OperacoesService(
-            ContaBancariaService contaBancariaService,
+    public OperationService(
+            AccountService accountService,
             CardService cardService,
-            ExtratoService extratoService
+            ExtractService extractService
     ) {
-        this.contaBancariaService = contaBancariaService;
+        this.accountService = accountService;
         this.cardService = cardService;
-        this.extratoService = extratoService;
+        this.extractService = extractService;
     }
 
     @Transactional
@@ -42,12 +43,12 @@ public class OperacoesService {
         Account account = validarCadastroConta(agencia, numeroConta);
 
         account.setBalance(account.getBalance().add(valor));
-        contaBancariaService.atualizarSaldo(account);
+        accountService.updateBalance(account);
 
         if (!transferencia) {
-            extratoService.gerarExtrato(account, TipoOperacaoUtil.DEPOSITO, valor);
+            extractService.createExtract(account, TipoOperacaoUtil.DEPOSITO, valor);
         } else {
-            extratoService.gerarExtrato(account, TipoOperacaoUtil.TRANSFERENCIA_RECEBIDA, valor);
+            extractService.createExtract(account, TipoOperacaoUtil.TRANSFERENCIA_RECEBIDA, valor);
         }
     }
 
@@ -61,14 +62,14 @@ public class OperacoesService {
         validarSaldo(account.getBalance(), valor);
 
         account.setBalance(account.getBalance().subtract(valor));
-        contaBancariaService.atualizarSaldo(account);
+        accountService.updateBalance(account);
 
         if (!transferencia && !compra) {
-            extratoService.gerarExtrato(account, TipoOperacaoUtil.SAQUE, valor);
+            extractService.createExtract(account, TipoOperacaoUtil.SAQUE, valor);
         } else if (!compra){
-            extratoService.gerarExtrato(account, TipoOperacaoUtil.TRANSFERENCIA_ENVIADA, valor);
+            extractService.createExtract(account, TipoOperacaoUtil.TRANSFERENCIA_ENVIADA, valor);
         } else if (!transferencia){
-            extratoService.gerarExtrato(account, TipoOperacaoUtil.COMPRA, valor);
+            extractService.createExtract(account, TipoOperacaoUtil.COMPRA, valor);
         }
     }
 
@@ -93,7 +94,7 @@ public class OperacoesService {
     }
 
     private Account validarCadastroConta(String agencia, String numeroConta) {
-        Account account = contaBancariaService.buscarContaPorAgenciaENumero(agencia, numeroConta);
+        Account account = accountService.findAccountByAgencyAndNumber(agencia, numeroConta);
 
         if (account == null) {
             throw new ContaNaoCadastradaException(agencia, numeroConta);
@@ -109,7 +110,7 @@ public class OperacoesService {
     }
 
     private Account buscarContaBancariaPorCliente(String cpf) {
-        Account account = contaBancariaService.buscarContaPorCliente(cpf);
+        Account account = accountService.findAccountByCustomer(cpf);
         if (Objects.isNull(account)) {
             throw new ContaNaoCadastradaException();
         }
@@ -118,7 +119,7 @@ public class OperacoesService {
     }
 
     private Card buscarCartaoPorContaBancaria(Long idConta) {
-        Card card = cardService.buscarCartaoPorContaBancaria(idConta);
+        Card card = cardService.findCardByAccount(idConta);
         if (Objects.isNull(card)) {
             throw new CartaoNaoVinculadoContaException(idConta);
         }

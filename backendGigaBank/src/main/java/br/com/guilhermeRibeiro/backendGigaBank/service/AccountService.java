@@ -59,7 +59,7 @@ public class AccountService {
         Account account = new Account(request, customer);
 
         repository.save(account);
-        cardService.cadastrar(account);
+        cardService.create(account);
 
         return account;
     }

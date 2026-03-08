@@ -2,7 +2,7 @@ package br.com.guilhermeRibeiro.backendGigaBank.repository;
 
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Account;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Cliente;
-import br.com.guilhermeRibeiro.backendGigaBank.entity.Extrato;
+import br.com.guilhermeRibeiro.backendGigaBank.entity.Extract;
 import br.com.guilhermeRibeiro.backendGigaBank.util.TipoOperacaoUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +16,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-public class ExtratoRepositoryTest {
+public class ExtractRepositoryTest {
 
-    private Extrato extrato;
+    private Extract extract;
 
     @Autowired
     private ExtratoRepository repository;
@@ -31,24 +31,24 @@ public class ExtratoRepositoryTest {
 
     @BeforeEach
     void setup() {
-        extrato = new Extrato();
+        extract = new Extract();
         Account account = ofContaBancaria();
-        extrato.setContaBancaria(account);
-        extrato.setTipoOperacao(TipoOperacaoUtil.SAQUE);
-        extrato.setValor(BigDecimal.ONE);
-        extrato.setDataOperacao(LocalDateTime.now());
+        extract.setAccount(account);
+        extract.setOperationType(TipoOperacaoUtil.SAQUE);
+        extract.setValue(BigDecimal.ONE);
+        extract.setOperationDate(LocalDateTime.now());
     }
 
     @Test
     void testFindByContaBancariaId() {
-        Extrato extratoUm = extrato;
+        Extract extractUm = extract;
 
-        repository.save(extratoUm);
+        repository.save(extractUm);
 
-        List<Extrato> extratoList = repository.findByContaBancariaId(extratoUm.getContaBancaria().getId());
+        List<Extract> extractList = repository.findByContaBancariaId(extractUm.getAccount().getId());
 
-        assertFalse(extratoList.isEmpty());
-        assertEquals(1, extratoList.size());
+        assertFalse(extractList.isEmpty());
+        assertEquals(1, extractList.size());
     }
 
     private Cliente ofCliente() {

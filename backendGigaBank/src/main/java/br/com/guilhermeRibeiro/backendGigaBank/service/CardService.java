@@ -1,15 +1,16 @@
 package br.com.guilhermeRibeiro.backendGigaBank.service;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Card;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Account;
 import br.com.guilhermeRibeiro.backendGigaBank.exception.CartaoInvalidoException;
 import br.com.guilhermeRibeiro.backendGigaBank.exception.CartaoNaoVinculadoContaException;
 import br.com.guilhermeRibeiro.backendGigaBank.repository.CardRepository;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.Optional;
 
 @Service
 public class CardService {
@@ -20,15 +21,13 @@ public class CardService {
         this.cardRepository = cardRepository;
     }
 
-    public Card cadastrar(Account account) {
-            Card card = criarCartao();
+    public void create(Account account) {
+            Card card = generateCard();
             card.setAccount(account);
             cardRepository.save(card);
-
-            return card;
     }
 
-    public Card buscarCartaoPorNumeroCvvDataVencimento(String numero, String cvv, LocalDate dataVencimento) {
+    public Card findByNumberAndCvvAndExpirationDate(String numero, String cvv, LocalDate dataVencimento) {
         Optional<Card> cartao = cardRepository.findByNumberAndCvvAndExpirationDate(numero, cvv, dataVencimento);
         if (cartao.isEmpty()) {
             throw new CartaoInvalidoException();
@@ -36,7 +35,7 @@ public class CardService {
         return cartao.get();
     }
 
-    public Card buscarCartaoPorContaBancaria(Long idConta) {
+    public Card findCardByAccount(Long idConta) {
         Optional<Card> cartao = cardRepository.findByAccountId(idConta);
         if (cartao.isEmpty()) {
             throw new CartaoNaoVinculadoContaException(idConta);
@@ -44,19 +43,19 @@ public class CardService {
         return cartao.get();
     }
 
-    private Card criarCartao() {
+    private Card generateCard() {
         Card card = new Card();
         LocalDate dataVencimento = LocalDate.now().plusYears(4);
 
-        card.setNumber(gerarNumeroCartao());
-        card.setCvv(gerarCvv());
+        card.setNumber(generateNumberCard());
+        card.setCvv(generateCvv());
         card.setExpirationDate(dataVencimento);
         card.setActive(true);
 
         return card;
     }
 
-    private String gerarNumeroCartao() {
+    private String generateNumberCard() {
 
         String numero = "";
         int min = 1;
@@ -75,7 +74,7 @@ public class CardService {
         return numero;
     }
 
-    private String gerarCvv() {
+    private String generateCvv() {
 
         String cvv = "";
         int min = 1;

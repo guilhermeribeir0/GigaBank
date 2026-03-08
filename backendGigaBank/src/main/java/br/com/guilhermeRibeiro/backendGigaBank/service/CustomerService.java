@@ -54,7 +54,7 @@ public class CustomerService {
             Customer customer = new Customer(request);
             return customerRepository.save(customer);
         } catch (Exception exception) {
-            throw new RuntimeException("Erro ao cadastrar o cliente" + exception.getMessage());
+            throw new RuntimeException("Erro ao create o cliente" + exception.getMessage());
         }
     }
 

@@ -2,22 +2,22 @@ package br.com.guilhermeRibeiro.backendGigaBank.dto.response.cliente;
 
 import java.io.Serializable;
 
-public class ClienteResponse implements Serializable {
+public class CustomerResponse implements Serializable {
 
     private Long id;
-    private String nome;
+    private String name;
     private String cpf;
     private String email;
-    private Boolean ativo;
+    private Boolean active;
 
-    public ClienteResponse() {}
+    public CustomerResponse() {}
 
-    public ClienteResponse(Long id, String nome, String cpf, String email, Boolean ativo) {
+    public CustomerResponse(Long id, String name, String cpf, String email, Boolean active) {
         this.id = id;
-        this.nome = nome;
+        this.name = name;
         this.cpf = cpf;
         this.email = email;
-        this.ativo = ativo;
+        this.active = active;
     }
 
     public Long getId() {
@@ -28,12 +28,12 @@ public class ClienteResponse implements Serializable {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String nome) {
+        this.name = nome;
     }
 
     public String getCpf() {
@@ -52,22 +52,22 @@ public class ClienteResponse implements Serializable {
         this.email = email;
     }
 
-    public Boolean getAtivo() {
-        return ativo;
+    public Boolean getActive() {
+        return active;
     }
 
-    public void setAtivo(Boolean ativo) {
-        this.ativo = ativo;
+    public void setActive(Boolean active) {
+        this.active = active;
     }
 
     @Override
     public String toString() {
-        return "ClienteResponse{" +
+        return "CustomerResponse{" +
                 "id=" + id +
-                ", nome='" + nome + '\'' +
+                ", name='" + name + '\'' +
                 ", cpf='" + cpf + '\'' +
                 ", email='" + email + '\'' +
-                ", ativo=" + ativo +
+                ", active=" + active +
                 '}';
     }
 }

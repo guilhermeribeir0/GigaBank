@@ -55,7 +55,7 @@ public class ClienteRepositoryTest {
         Cliente cli = this.cliente;
         repository.save(cli);
 
-        List<Cliente> clientes = repository.findByNome(cli.getNome());
+        List<Cliente> clientes = repository.findByName(cli.getNome());
 
         assertEquals(1, clientes.size());
     }

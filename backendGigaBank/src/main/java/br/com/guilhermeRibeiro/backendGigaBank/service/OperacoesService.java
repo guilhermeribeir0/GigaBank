@@ -4,8 +4,8 @@ import br.com.guilhermeRibeiro.backendGigaBank.dto.request.operacoes.CompraReque
 import br.com.guilhermeRibeiro.backendGigaBank.dto.request.operacoes.DepositoRequest;
 import br.com.guilhermeRibeiro.backendGigaBank.dto.request.operacoes.SaqueRequest;
 import br.com.guilhermeRibeiro.backendGigaBank.dto.request.operacoes.TransferenciaRequest;
-import br.com.guilhermeRibeiro.backendGigaBank.entity.Cartao;
-import br.com.guilhermeRibeiro.backendGigaBank.entity.ContaBancaria;
+import br.com.guilhermeRibeiro.backendGigaBank.entity.Account;
+import br.com.guilhermeRibeiro.backendGigaBank.entity.Card;
 import br.com.guilhermeRibeiro.backendGigaBank.exception.CartaoNaoVinculadoContaException;
 import br.com.guilhermeRibeiro.backendGigaBank.exception.ContaNaoCadastradaException;
 import br.com.guilhermeRibeiro.backendGigaBank.exception.SaldoInsuficienteException;
@@ -20,16 +20,16 @@ import java.util.Objects;
 public class OperacoesService {
 
     private final ContaBancariaService contaBancariaService;
-    private final CartaoService cartaoService;
+    private final CardService cardService;
     private final ExtratoService extratoService;
 
     public OperacoesService(
             ContaBancariaService contaBancariaService,
-            CartaoService cartaoService,
+            CardService cardService,
             ExtratoService extratoService
     ) {
         this.contaBancariaService = contaBancariaService;
-        this.cartaoService = cartaoService;
+        this.cardService = cardService;
         this.extratoService = extratoService;
     }
 
@@ -39,15 +39,15 @@ public class OperacoesService {
         String numeroConta = request.getNumeroConta();
         BigDecimal valor = BigDecimal.valueOf(request.getValor());
 
-        ContaBancaria contaBancaria = validarCadastroConta(agencia, numeroConta);
+        Account account = validarCadastroConta(agencia, numeroConta);
 
-        contaBancaria.setSaldo(contaBancaria.getSaldo().add(valor));
-        contaBancariaService.atualizarSaldo(contaBancaria);
+        account.setBalance(account.getBalance().add(valor));
+        contaBancariaService.atualizarSaldo(account);
 
         if (!transferencia) {
-            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.DEPOSITO, valor);
+            extratoService.gerarExtrato(account, TipoOperacaoUtil.DEPOSITO, valor);
         } else {
-            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.TRANSFERENCIA_RECEBIDA, valor);
+            extratoService.gerarExtrato(account, TipoOperacaoUtil.TRANSFERENCIA_RECEBIDA, valor);
         }
     }
 
@@ -57,18 +57,18 @@ public class OperacoesService {
         String numeroConta = request.getNumeroConta();
         BigDecimal valor = BigDecimal.valueOf(request.getValor());
 
-        ContaBancaria contaBancaria = validarCadastroConta(agencia, numeroConta);
-        validarSaldo(contaBancaria.getSaldo(), valor);
+        Account account = validarCadastroConta(agencia, numeroConta);
+        validarSaldo(account.getBalance(), valor);
 
-        contaBancaria.setSaldo(contaBancaria.getSaldo().subtract(valor));
-        contaBancariaService.atualizarSaldo(contaBancaria);
+        account.setBalance(account.getBalance().subtract(valor));
+        contaBancariaService.atualizarSaldo(account);
 
         if (!transferencia && !compra) {
-            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.SAQUE, valor);
+            extratoService.gerarExtrato(account, TipoOperacaoUtil.SAQUE, valor);
         } else if (!compra){
-            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.TRANSFERENCIA_ENVIADA, valor);
+            extratoService.gerarExtrato(account, TipoOperacaoUtil.TRANSFERENCIA_ENVIADA, valor);
         } else if (!transferencia){
-            extratoService.gerarExtrato(contaBancaria, TipoOperacaoUtil.COMPRA, valor);
+            extratoService.gerarExtrato(account, TipoOperacaoUtil.COMPRA, valor);
         }
     }
 
@@ -82,24 +82,24 @@ public class OperacoesService {
 
     public void compra(CompraRequest request) {
         try {
-            ContaBancaria contaBancaria = buscarContaBancariaPorCliente(request.getCpfCliente());
-            Cartao cartao = buscarCartaoPorContaBancaria(contaBancaria.getId());
+            Account account = buscarContaBancariaPorCliente(request.getCpfCliente());
+            Card card = buscarCartaoPorContaBancaria(account.getId());
 
-            SaqueRequest saque = new SaqueRequest(contaBancaria.getNumero(), contaBancaria.getAgencia(), request.getValor());
+            SaqueRequest saque = new SaqueRequest(account.getNumber(), account.getAgency(), request.getValor());
             this.sacar(saque, false, true);
         } catch (ContaNaoCadastradaException | CartaoNaoVinculadoContaException exception) {
             String.format("Erro ao realizar operacao. %s", exception.getMessage());
         }
     }
 
-    private ContaBancaria validarCadastroConta(String agencia, String numeroConta) {
-        ContaBancaria contaBancaria = contaBancariaService.buscarContaPorAgenciaENumero(agencia, numeroConta);
+    private Account validarCadastroConta(String agencia, String numeroConta) {
+        Account account = contaBancariaService.buscarContaPorAgenciaENumero(agencia, numeroConta);
 
-        if (contaBancaria == null) {
+        if (account == null) {
             throw new ContaNaoCadastradaException(agencia, numeroConta);
         }
 
-        return contaBancaria;
+        return account;
     }
 
     private void validarSaldo(BigDecimal saldo, BigDecimal valor) {
@@ -108,21 +108,21 @@ public class OperacoesService {
         }
     }
 
-    private ContaBancaria buscarContaBancariaPorCliente(String cpf) {
-        ContaBancaria contaBancaria = contaBancariaService.buscarContaPorCliente(cpf);
-        if (Objects.isNull(contaBancaria)) {
+    private Account buscarContaBancariaPorCliente(String cpf) {
+        Account account = contaBancariaService.buscarContaPorCliente(cpf);
+        if (Objects.isNull(account)) {
             throw new ContaNaoCadastradaException();
         }
 
-        return contaBancaria;
+        return account;
     }
 
-    private Cartao buscarCartaoPorContaBancaria(Long idConta) {
-        Cartao cartao = cartaoService.buscarCartaoPorContaBancaria(idConta);
-        if (Objects.isNull(cartao)) {
+    private Card buscarCartaoPorContaBancaria(Long idConta) {
+        Card card = cardService.buscarCartaoPorContaBancaria(idConta);
+        if (Objects.isNull(card)) {
             throw new CartaoNaoVinculadoContaException(idConta);
         }
 
-        return cartao;
+        return card;
     }
 }

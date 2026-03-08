@@ -1,7 +1,7 @@
 package br.com.guilhermeRibeiro.backendGigaBank.repository;
 
+import br.com.guilhermeRibeiro.backendGigaBank.entity.Account;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Cliente;
-import br.com.guilhermeRibeiro.backendGigaBank.entity.ContaBancaria;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,47 +12,47 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-public class ContaBancariaRepositoryTest {
+public class AccountRepositoryTest {
 
-    private ContaBancaria contaBancaria;
+    private Account account;
 
     @Autowired
-    private ContaBancariaRepository repository;
+    private AccountRepository repository;
 
     @Autowired
     private ClienteRepository clienteRepository;
 
     @BeforeEach
     void setup() {
-        contaBancaria = new ContaBancaria();
+        account = new Account();
         Cliente cliente = ofCliente();
 
-        contaBancaria.setCliente(cliente);
-        contaBancaria.setNumero("224488");
-        contaBancaria.setAgencia("2244");
-        contaBancaria.setAtiva(true);
-        repository.save(contaBancaria);
+        account.setCustomer(cliente);
+        account.setNumber("224488");
+        account.setAgency("2244");
+        account.setActive(true);
+        repository.save(account);
     }
 
     @Test
     void testFindByAgenciaAndNumero() {
-        ContaBancaria conta = repository.save(contaBancaria);
+        Account conta = repository.save(account);
 
-        Optional<ContaBancaria> contaSalva = repository.findByAgenciaAndNumero(conta.getAgencia(), conta.getNumero());
+        Optional<Account> contaSalva = repository.findByAgencyAndNumber(conta.getAgency(), conta.getNumber());
 
         assertTrue(contaSalva.isPresent());
-        assertEquals(conta.getAgencia(), contaSalva.get().getAgencia());
-        assertEquals(conta.getNumero(), contaSalva.get().getNumero());
+        assertEquals(conta.getAgency(), contaSalva.get().getAgency());
+        assertEquals(conta.getNumber(), contaSalva.get().getNumber());
     }
 
     @Test
     void testFindByClienteCpf() {
-        ContaBancaria conta = repository.save(contaBancaria);
+        Account conta = repository.save(account);
 
-        Optional<ContaBancaria> contaSalva = repository.findByClienteCpf(conta.getCliente().getCpf());
+        Optional<Account> contaSalva = repository.findByCustomerCpf(conta.getCustomer().getCpf());
 
         assertTrue(contaSalva.isPresent());
-        assertEquals(conta.getCliente().getCpf(), contaSalva.get().getCliente().getCpf());
+        assertEquals(conta.getCustomer().getCpf(), contaSalva.get().getCustomer().getCpf());
     }
 
     private Cliente ofCliente() {

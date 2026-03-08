@@ -14,7 +14,7 @@ public class Extrato {
 
     @ManyToOne
     @JoinColumn(name = "id_conta")
-    private ContaBancaria contaBancaria;
+    private Account account;
 
     @Column(name = "tipo_operacao")
     private String tipoOperacao;
@@ -32,12 +32,12 @@ public class Extrato {
         this.id = id;
     }
 
-    public ContaBancaria getContaBancaria() {
-        return contaBancaria;
+    public Account getContaBancaria() {
+        return account;
     }
 
-    public void setContaBancaria(ContaBancaria contaBancaria) {
-        this.contaBancaria = contaBancaria;
+    public void setContaBancaria(Account account) {
+        this.account = account;
     }
 
     public String getTipoOperacao() {
@@ -68,7 +68,7 @@ public class Extrato {
     public String toString() {
         return "Extrato{" +
                 "id=" + id +
-                ", contaBancaria=" + contaBancaria +
+                ", contaBancaria=" + account +
                 ", tipoOperacao='" + tipoOperacao + '\'' +
                 ", valor=" + valor +
                 ", dataOperacao=" + dataOperacao +

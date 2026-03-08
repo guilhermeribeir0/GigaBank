@@ -1,7 +1,7 @@
 package br.com.guilhermeRibeiro.backendGigaBank.repository;
 
+import br.com.guilhermeRibeiro.backendGigaBank.entity.Account;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Cliente;
-import br.com.guilhermeRibeiro.backendGigaBank.entity.ContaBancaria;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Extrato;
 import br.com.guilhermeRibeiro.backendGigaBank.util.TipoOperacaoUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,13 +27,13 @@ public class ExtratoRepositoryTest {
     private ClienteRepository clienteRepository;
 
     @Autowired
-    private ContaBancariaRepository contaBancariaRepository;
+    private AccountRepository accountRepository;
 
     @BeforeEach
     void setup() {
         extrato = new Extrato();
-        ContaBancaria contaBancaria = ofContaBancaria();
-        extrato.setContaBancaria(contaBancaria);
+        Account account = ofContaBancaria();
+        extrato.setContaBancaria(account);
         extrato.setTipoOperacao(TipoOperacaoUtil.SAQUE);
         extrato.setValor(BigDecimal.ONE);
         extrato.setDataOperacao(LocalDateTime.now());
@@ -60,13 +60,13 @@ public class ExtratoRepositoryTest {
         return clienteRepository.save(cliente);
     }
 
-    private ContaBancaria ofContaBancaria() {
-        ContaBancaria contaBancaria = new ContaBancaria();
+    private Account ofContaBancaria() {
+        Account account = new Account();
         Cliente cliente = ofCliente();
-        contaBancaria.setCliente(cliente);
-        contaBancaria.setNumero("224488");
-        contaBancaria.setAgencia("2244");
-        contaBancaria.setAtiva(true);
-        return contaBancariaRepository.save(contaBancaria);
+        account.setCustomer(cliente);
+        account.setNumber("224488");
+        account.setAgency("2244");
+        account.setActive(true);
+        return accountRepository.save(account);
     }
 }

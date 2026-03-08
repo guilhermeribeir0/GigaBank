@@ -1,6 +1,6 @@
 package br.com.guilhermeRibeiro.backendGigaBank.service;
 
-import br.com.guilhermeRibeiro.backendGigaBank.entity.ContaBancaria;
+import br.com.guilhermeRibeiro.backendGigaBank.entity.Account;
 import br.com.guilhermeRibeiro.backendGigaBank.entity.Extrato;
 import br.com.guilhermeRibeiro.backendGigaBank.exception.ContaNaoCadastradaException;
 import br.com.guilhermeRibeiro.backendGigaBank.exception.NaoExisteMovimentosException;
@@ -28,7 +28,7 @@ public class ExtratoService {
         this.contaBancariaService = contaBancariaService;
     }
 
-    public void gerarExtrato(ContaBancaria conta, String tipoOperacao, BigDecimal valor) {
+    public void gerarExtrato(Account conta, String tipoOperacao, BigDecimal valor) {
         Extrato extrato = new Extrato();
         LocalDateTime dataOperacao = LocalDateTime.now();
         extrato.setContaBancaria(conta);
@@ -39,7 +39,7 @@ public class ExtratoService {
     }
 
     public List<Extrato> buscaExtratoPorPeriodo(String agencia, String numeroConta, String dataInicio, String dataFim) {
-        ContaBancaria conta = contaBancariaService.buscarContaPorAgenciaENumero(agencia, numeroConta);
+        Account conta = contaBancariaService.buscarContaPorAgenciaENumero(agencia, numeroConta);
         if (Objects.isNull(conta)) {
             throw new ContaNaoCadastradaException(agencia, numeroConta);
         }
